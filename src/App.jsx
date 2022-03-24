@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import SearchIcon from "./components/search.svg";
 import "./App.css";
 //API_KEY = 9bccaec7
@@ -6,30 +6,43 @@ import "./App.css";
 const API_URL = "http://www.omdbapi.com?apikey=9bccaec7";
 
 function App() {
+  let search = useRef(null);
+
   const [movie1, setMovie1] = useState([]);
-  const [searcMovie, setSearchMovie] = useState("");
+
+  const [searchMovie, setSearchMovie] = useState("spiderman");
+
+  const handleSearch = (movieTitle) => {
+    setSearchMovie(movieTitle);
+    console.log(movieTitle);
+    console.log(searchMovie);
+  };
   const searchMovies = async (title) => {
     const response = await fetch(`${API_URL}&s=${title}`);
     const data = await response.json();
-    setMovie1(data.Search);
-    console.log(data.Search);
-  };
-  console.log(movie1);
-
-  const handleChange = (e) => {
-    setSearchMovie(e.target.value);
+    if (data.search === false) {
+      alert("you movie is not found plz check spelling");
+    } else {
+      setMovie1(data.Search);
+    }
   };
 
   useEffect(() => {
-    searchMovies("spiderman");
-  }, []);
-
+    searchMovies(searchMovie);
+  }, [searchMovie]);
+  console.log(movie1);
   return (
     <div className="app">
       <h1>MOVIES LAND HERE</h1>
       <div className="search">
-        <input placeholder="search for movies" onChange={handleChange} />
-        <img src={SearchIcon} alt="search" onClick={() => setSearchMovie()} />
+        <input placeholder="search for movies" ref={search} />
+        <img
+          src={SearchIcon}
+          alt="search"
+          onClick={() => {
+            handleSearch(search.current.value);
+          }}
+        />
       </div>
       <div className="container">
         {movie1.map((d, ind) => {
