@@ -14,23 +14,24 @@ function App() {
 
   const handleSearch = (movieTitle) => {
     setSearchMovie(movieTitle);
-    console.log(movieTitle);
-    console.log(searchMovie);
   };
   const searchMovies = async (title) => {
     const response = await fetch(`${API_URL}&s=${title}`);
     const data = await response.json();
-    if (data.search === false) {
-      alert("you movie is not found plz check spelling");
-    } else {
-      setMovie1(data.Search);
-    }
+
+    setMovie1(data.Search);
   };
 
   useEffect(() => {
     searchMovies(searchMovie);
   }, [searchMovie]);
-  console.log(movie1);
+
+  if (movie1 === undefined) {
+    alert("you movie is not found plz check spelling");
+    window.location.reload();
+  } else {
+    console.log(movie1);
+  }
   return (
     <div className="app">
       <h1>MOVIES LAND HERE</h1>
